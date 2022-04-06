@@ -96,12 +96,13 @@ namespace Breakthrough
                                             Console.WriteLine(Deck.GetCardDescriptionAt(1));
                                             Console.WriteLine(Deck.GetCardDescriptionAt(2));
 
-                                            CurrentLock.UpdatePeekUsed();
+                                            CurrentLock.UpdatePeekUsed(true);
                                         }
                                         else
                                         {
                                             Console.WriteLine("Peek has already been used and cannot be used again");
                                             validChoice = false;
+                                            MenuChoice = GetChoice();
                                         }
                                         break;
                                     }
@@ -109,6 +110,7 @@ namespace Breakthrough
                         }
                         if (CurrentLock.GetLockSolved())
                         {
+                            CurrentLock.UpdatePeekUsed(false);
                             LockSolved = true;
                             ProcessLockSolved();
                         }
@@ -583,9 +585,9 @@ namespace Breakthrough
         {
             return peekUsed;
         }
-        public virtual void UpdatePeekUsed()
+        public virtual void UpdatePeekUsed(bool tOrF)
         {
-            peekUsed = true;
+            peekUsed = tOrF;
         }
     }
 
