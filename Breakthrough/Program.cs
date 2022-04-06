@@ -63,26 +63,49 @@ namespace Breakthrough
                         Console.WriteLine("Number of cards in deck: " + Deck.GetNumberOfCards());
                         Console.WriteLine(Hand.GetCardDisplay());
                         MenuChoice = GetChoice();
-                        switch (MenuChoice)
+                        bool validChoice = false;
+                        while (validChoice == false)
                         {
-                            case "D":
-                                {
-                                    Console.WriteLine(Discard.GetCardDisplay());
-                                    break;
-                                }
-                            case "U":
-                                {
-                                    int CardChoice = GetCardChoice();
-                                    string DiscardOrPlay = GetDiscardOrPlayChoice();
-                                    if (DiscardOrPlay == "D")
+                            validChoice = true;
+                            switch (MenuChoice)
+                            {
+                                case "D":
                                     {
-                                        MoveCard(Hand, Discard, Hand.GetCardNumberAt(CardChoice - 1));
-                                        GetCardFromDeck(CardChoice);
+                                        Console.WriteLine(Discard.GetCardDisplay());
+                                        break;
                                     }
-                                    else if (DiscardOrPlay == "P")
-                                        PlayCardToSequence(CardChoice);
-                                    break;
-                                }
+                                case "U":
+                                    {
+                                        int CardChoice = GetCardChoice();
+                                        string DiscardOrPlay = GetDiscardOrPlayChoice();
+                                        if (DiscardOrPlay == "D")
+                                        {
+                                            MoveCard(Hand, Discard, Hand.GetCardNumberAt(CardChoice - 1));
+                                            GetCardFromDeck(CardChoice);
+                                        }
+                                        else if (DiscardOrPlay == "P")
+                                            PlayCardToSequence(CardChoice);
+                                        break;
+                                    }
+                                case "P":
+                                    {
+                                        bool peekUsed = CurrentLock.GetPeekUsed();
+                                        if (peekUsed == false)
+                                        {
+                                            Console.WriteLine(Deck.GetCardDescriptionAt(0));
+                                            Console.WriteLine(Deck.GetCardDescriptionAt(1));
+                                            Console.WriteLine(Deck.GetCardDescriptionAt(2));
+
+                                            CurrentLock.UpdatePeekUsed();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Peek has already been used and cannot be used again");
+                                            validChoice = false;
+                                        }
+                                        break;
+                                    }
+                            }
                         }
                         if (CurrentLock.GetLockSolved())
                         {
@@ -368,8 +391,16 @@ namespace Breakthrough
 
         private string GetChoice()
         {
+            bool peekOption = CurrentLock.GetPeekUsed();
             Console.WriteLine();
-            Console.Write("(D)iscard inspect, (U)se card:> ");
+            if (peekOption == true)
+            {
+                Console.Write("(D)iscard inspect, (U)se card:> ");
+            }
+            else
+            {
+                Console.Write("(D)iscard inspect, (U)se card, (P)eek:> ");
+            }
             string Choice = Console.ReadLine().ToUpper();
             return Choice;
         }
@@ -469,6 +500,7 @@ namespace Breakthrough
     class Lock
     {
         protected List<Challenge> Challenges = new List<Challenge>();
+        bool peekUsed = false;
 
         public virtual void AddChallenge(List<string> condition)
         {
@@ -545,6 +577,15 @@ namespace Breakthrough
         public virtual int GetNumberOfChallenges()
         {
             return Challenges.Count;
+        }
+
+        public virtual bool GetPeekUsed()
+        {
+            return peekUsed;
+        }
+        public virtual void UpdatePeekUsed()
+        {
+            peekUsed = true;
         }
     }
 
