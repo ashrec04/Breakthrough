@@ -182,6 +182,10 @@ namespace Breakthrough
                     Score += MoveCard(Hand, Sequence, Hand.GetCardNumberAt(cardChoice - 1));
                     GetCardFromDeck(cardChoice);
                 }
+                else
+                {
+                    Console.WriteLine("You cannot play two cards of the same type sequentially, '" + Hand.GetCardDescriptionAt(cardChoice - 1) + "' is the same card that you placed down before");
+                }
             }
             else
             {
