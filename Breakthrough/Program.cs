@@ -60,6 +60,7 @@ namespace Breakthrough
                         Console.WriteLine("Current score: " + Score);
                         Console.WriteLine(CurrentLock.GetLockDetails());
                         Console.WriteLine(Sequence.GetCardDisplay());
+                        Console.WriteLine("Number of cards in deck: " + Deck.GetNumberOfCards());
                         Console.WriteLine(Hand.GetCardDisplay());
                         MenuChoice = GetChoice();
                         switch (MenuChoice)
