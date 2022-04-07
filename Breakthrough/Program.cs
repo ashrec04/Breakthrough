@@ -30,6 +30,7 @@ namespace Breakthrough
         private List<Lock> Locks = new List<Lock>();
         private int Score;
         private bool GameOver;
+        private bool quit = false;
         private Lock CurrentLock;
         private bool LockSolved;
         bool mulliganUsed = false;
@@ -47,15 +48,15 @@ namespace Breakthrough
         public void PlayGame()
         {
             string MenuChoice;
-            if (Locks.Count > 0)
+            if (Locks.Count > 0 && quit == false)
             {
                 GameOver = false;
                 CurrentLock = new Lock();
                 SetupGame();
-                while (!GameOver)
+                while (!GameOver && quit == false)
                 {
                     LockSolved = false;
-                    while (!LockSolved && !GameOver)
+                    while (!LockSolved && !GameOver && quit == false)
                     {
                         Console.WriteLine();
                         Console.WriteLine("Current score: " + Score);
@@ -135,6 +136,13 @@ namespace Breakthrough
                                             validChoice = false;
                                             MenuChoice = GetChoice();
                                         }
+                                        break;
+                                    }
+                                case "Q":
+                                    {
+                                        Score += Deck.GetNumberOfCards();
+                                        Console.WriteLine("Game over, your final score is " + Score);
+                                        quit = true;
                                         break;
                                     }
                             }
@@ -434,19 +442,19 @@ namespace Breakthrough
             Console.WriteLine();
             if (peek == true && mulligan == true)
             {
-                Console.Write("(D)iscard inspect, (U)se card:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (Q)uit:> ");
             }
             else if (peek == false && mulligan == true)
             {
-                Console.Write("(D)iscard inspect, (U)se card, (P)eek:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (P)eek:> ");
             }
             else if (peek == true && mulligan == false)
             {
-                Console.Write("(D)iscard inspect, (U)se card, (M)ulligan:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (M)ulligan:> ");
             }
             else
             {
-                Console.Write("(D)iscard inspect, (U)se card, (P)eek, (M)ulligan:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (P)eek, (M)ulligan:> ");
             }
             string Choice = Console.ReadLine().ToUpper();
             return Choice;
