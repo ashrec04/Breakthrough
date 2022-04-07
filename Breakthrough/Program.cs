@@ -32,6 +32,7 @@ namespace Breakthrough
         private bool GameOver;
         private Lock CurrentLock;
         private bool LockSolved;
+        bool mulliganUsed = false;
 
         public Breakthrough()
         {
@@ -101,6 +102,36 @@ namespace Breakthrough
                                         else
                                         {
                                             Console.WriteLine("Peek has already been used and cannot be used again");
+                                            validChoice = false;
+                                            MenuChoice = GetChoice();
+                                        }
+                                        break;
+                                    }
+                                case "M":
+                                    {
+                                        if (mulliganUsed == false)
+                                        {
+                                            Deck = new CardCollection("DECK");
+                                            Hand = new CardCollection("HAND");
+                                            Sequence = new CardCollection("SEQUENCE");
+                                            Discard = new CardCollection("DISCARD");
+                                            //reloads the deck
+                                            CreateStandardDeck();
+                                            Deck.Shuffle();
+                                            for (int Count = 1; Count <= 5; Count++)
+                                            {
+                                                MoveCard(Deck, Hand, Deck.GetCardNumberAt(0));
+                                            }
+                                            AddDifficultyCardsToDeck();
+                                            Deck.Shuffle();
+                                            CurrentLock = GetRandomLock();
+
+                                            Console.WriteLine("Deck has been reshuffled and distributed");
+                                            mulliganUsed = true;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Mulligan has already been used and cannot be used again");
                                             validChoice = false;
                                             MenuChoice = GetChoice();
                                         }
@@ -397,15 +428,25 @@ namespace Breakthrough
 
         private string GetChoice()
         {
-            bool peekOption = CurrentLock.GetPeekUsed();
+            bool peek = CurrentLock.GetPeekUsed();
+            bool mulligan = GetMulliganUsed();
+
             Console.WriteLine();
-            if (peekOption == true)
+            if (peek == true && mulligan == true)
             {
                 Console.Write("(D)iscard inspect, (U)se card:> ");
             }
-            else
+            else if (peek == false && mulligan == true)
             {
                 Console.Write("(D)iscard inspect, (U)se card, (P)eek:> ");
+            }
+            else if (peek == true && mulligan == false)
+            {
+                Console.Write("(D)iscard inspect, (U)se card, (M)ulligan:> ");
+            }
+            else
+            {
+                Console.Write("(D)iscard inspect, (U)se card, (P)eek, (M)ulligan:> ");
             }
             string Choice = Console.ReadLine().ToUpper();
             return Choice;
@@ -469,6 +510,14 @@ namespace Breakthrough
                 }
             }
             return Score;
+        }
+        private bool GetMulliganUsed()
+        {
+            return mulliganUsed;
+        }
+        private void UpdateMulliganUsed(bool tOrF)
+        {
+            mulliganUsed = tOrF;
         }
     }
 
