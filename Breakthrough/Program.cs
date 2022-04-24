@@ -147,8 +147,8 @@ namespace Breakthrough
                                     }
                                 case "S":
                                     {
-                                        SaveGame(CurrentLock);
-                                        Console.WriteLine("Game has been saved");
+                                        SaveGame(CurrentLock, Hand, Sequence, Deck);
+                                        Console.WriteLine("Game has been saved\nSave file is 'backup.txt'");
                                         quit = true;
                                         break;
                                     }
@@ -200,7 +200,9 @@ namespace Breakthrough
             Choice = Console.ReadLine().ToUpper();
             if (Choice == "L")
             {
-                if (!LoadGame("game1.txt"))
+                Console.Write("Enter filename:> ");
+                Choice = Console.ReadLine().ToUpper();
+                if (!LoadGame(Choice))
                 {
                     GameOver = true;
                 }
@@ -504,17 +506,48 @@ namespace Breakthrough
             }
         }
 
-        private void SaveGame(Lock CurrentLock)
+        private void SaveGame(Lock CurrentLock, CardCollection Hand, CardCollection Sequence, CardCollection Deck)
         {
             string[] saveFile = { "", "", "", "", "", "", "" };
             saveFile[0] = Convert.ToString(Score);
             saveFile[1] = CurrentLock.GetChallangeAsString();
             saveFile[2] = CurrentLock.GetChallangeMetAsString();
+
+            //hand
+            for (int i = 1; i <= 5; i++)
+            {
+                saveFile[3] += Hand.GetCardDescriptionAt(i-1) + " " + Hand.GetCardNumberAt(i - 1) + ",";
+            }
+            saveFile[3] = saveFile[3].Remove(saveFile[3].Length - 1, 1);
+
+            //sequence
+            for (int i = 1; i <= Sequence.GetNumberOfCards(); i++)
+            {
+                saveFile[4] += Sequence.GetCardDescriptionAt(i - 1) + " " + Sequence.GetCardNumberAt(i - 1) + ",";
+            }
+            try
+            {
+                saveFile[4] = saveFile[4].Remove(saveFile[4].Length - 1, 1);
+            }
+            catch { }
+
+            //deck
+            for (int i = 1; i <= Deck.GetNumberOfCards(); i++)
+            {
+                saveFile[6] += Deck.GetCardDescriptionAt(i - 1) + " " + Deck.GetCardNumberAt(i - 1) + ",";
+            }
+            saveFile[6] = saveFile[6].Remove(saveFile[6].Length - 1, 1);
+
             using (StreamWriter writer = new StreamWriter("backup.txt"))
             {
-                //writer.WriteLine("yooooo");
+                writer.WriteLine(saveFile[0]);
+                writer.WriteLine(saveFile[1]);
+                writer.WriteLine(saveFile[2]);
+                writer.WriteLine(saveFile[3]);
+                writer.WriteLine(saveFile[4]);
+                writer.WriteLine(saveFile[5]);
+                writer.WriteLine(saveFile[6]);
             }
-            Console.WriteLine(saveFile[2]);
         }
 
         private int MoveCard(CardCollection fromCollection, CardCollection toCollection, int cardNumber)
