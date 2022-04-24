@@ -147,7 +147,7 @@ namespace Breakthrough
                                     }
                                 case "S":
                                     {
-                                        SaveGame();
+                                        SaveGame(CurrentLock);
                                         Console.WriteLine("Game has been saved");
                                         quit = true;
                                         break;
@@ -504,14 +504,17 @@ namespace Breakthrough
             }
         }
 
-        private void SaveGame()
+        private void SaveGame(Lock CurrentLock)
         {
             string[] saveFile = { "", "", "", "", "", "", "" };
             saveFile[0] = Convert.ToString(Score);
+            saveFile[1] = CurrentLock.GetChallangeAsString();
+            saveFile[2] = CurrentLock.GetChallangeMetAsString();
             using (StreamWriter writer = new StreamWriter("backup.txt"))
             {
                 //writer.WriteLine("yooooo");
             }
+            Console.WriteLine(saveFile[2]);
         }
 
         private int MoveCard(CardCollection fromCollection, CardCollection toCollection, int cardNumber)
@@ -617,6 +620,35 @@ namespace Breakthrough
             }
             LockDetails += Environment.NewLine;
             return LockDetails;
+        }
+
+        public virtual string GetChallangeAsString()
+        {
+            string challengeString = "";
+            foreach (var C in Challenges)
+            {
+                challengeString += ConvertConditionToString(C.GetCondition());
+                challengeString += ";";
+            }
+            challengeString = challengeString.Remove(challengeString.Length - 1, 1);
+            return challengeString;
+        }
+        public virtual string GetChallangeMetAsString()
+        {
+            string challengeMetString = "";
+            foreach (var C in Challenges)
+            {
+                if (C.GetMet())
+                {
+                    challengeMetString += "Y;";
+                }
+                else
+                {
+                    challengeMetString += "N;";
+                }
+            }
+            challengeMetString = challengeMetString.Remove(challengeMetString.Length - 1, 1);
+            return challengeMetString;
         }
 
         public virtual bool GetLockSolved()
