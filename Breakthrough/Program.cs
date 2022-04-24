@@ -145,6 +145,13 @@ namespace Breakthrough
                                         quit = true;
                                         break;
                                     }
+                                case "S":
+                                    {
+                                        SaveGame();
+                                        Console.WriteLine("Game has been saved");
+                                        quit = true;
+                                        break;
+                                    }
                             }
                         }
                         if (CurrentLock.GetLockSolved())
@@ -442,19 +449,19 @@ namespace Breakthrough
             Console.WriteLine();
             if (peek == true && mulligan == true)
             {
-                Console.Write("(D)iscard inspect, (U)se card, (Q)uit:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (S)ave Game, (Q)uit:> ");
             }
             else if (peek == false && mulligan == true)
             {
-                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (P)eek:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (P)eek, (S)ave Game, (Q)uit:> ");
             }
             else if (peek == true && mulligan == false)
             {
-                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (M)ulligan:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (M)ulligan, (S)ave Game, (Q)uit:> ");
             }
             else
             {
-                Console.Write("(D)iscard inspect, (U)se card, (Q)uit, (P)eek, (M)ulligan:> ");
+                Console.Write("(D)iscard inspect, (U)se card, (P)eek, (M)ulligan, (S)ave Game, (Q)uit:> ");
             }
             string Choice = Console.ReadLine().ToUpper();
             return Choice;
@@ -494,6 +501,16 @@ namespace Breakthrough
                 Deck.AddCard(NewCard);
                 NewCard = new ToolCard("K", "c");
                 Deck.AddCard(NewCard);
+            }
+        }
+
+        private void SaveGame()
+        {
+            string[] saveFile = { "", "", "", "", "", "", "" };
+            saveFile[0] = Convert.ToString(Score);
+            using (StreamWriter writer = new StreamWriter("backup.txt"))
+            {
+                //writer.WriteLine("yooooo");
             }
         }
 
