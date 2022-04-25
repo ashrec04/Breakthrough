@@ -200,8 +200,33 @@ namespace Breakthrough
             Choice = Console.ReadLine().ToUpper();
             if (Choice == "L")
             {
-                Console.Write("Enter filename:> ");
+                string[] fileNameList = Directory.GetFiles(@"C:\Users\Ash Record\OneDrive - Credor Point\CHILD\A level\Comp Sci\Breakthrough\Breakthrough\Breakthrough\bin\Debug", "*.txt", SearchOption.AllDirectories);
+                int lockFileAt = -1;
+                for (int i = 0; i < fileNameList.Length; i++)
+                {
+                    fileNameList[i] = fileNameList[i].Remove(0, 116);
+                    fileNameList[i] = fileNameList[i].Remove(fileNameList[i].Length - 4, 4);
+
+                    if (fileNameList[i] == "locks")
+                    {
+                        lockFileAt = i; 
+                    }
+                }
+                try
+                {
+                    fileNameList = fileNameList.Where((source, index) => index != lockFileAt).ToArray();
+                }
+                catch {
+                    Console.WriteLine("CUM");
+                }
+                for (int i = 0; i < fileNameList.Length; i++)
+                {
+                    Console.WriteLine(Convert.ToString(i + 1) + ":  " + fileNameList[i]);
+                }
+                Console.Write("Enter number from list to load game:> ");
                 Choice = Console.ReadLine().ToUpper();
+                Choice = fileNameList[Convert.ToInt32(Choice) - 1] + ".txt";
+                Console.WriteLine(Choice);
                 if (!LoadGame(Choice))
                 {
                     GameOver = true;
