@@ -147,7 +147,7 @@ namespace Breakthrough
                                     }
                                 case "S":
                                     {
-                                        SaveGame(CurrentLock, Hand, Sequence, Deck);
+                                        SaveGame(CurrentLock, Hand, Sequence, Deck, Discard);
                                         Console.WriteLine("Game has been saved\nSave file is 'backup.txt'");
                                         quit = true;
                                         break;
@@ -200,6 +200,7 @@ namespace Breakthrough
             Choice = Console.ReadLine().ToUpper();
             if (Choice == "L")
             {
+
                 Console.Write("Enter filename:> ");
                 Choice = Console.ReadLine().ToUpper();
                 if (!LoadGame(Choice))
@@ -506,7 +507,7 @@ namespace Breakthrough
             }
         }
 
-        private void SaveGame(Lock CurrentLock, CardCollection Hand, CardCollection Sequence, CardCollection Deck)
+        private void SaveGame(Lock CurrentLock, CardCollection Hand, CardCollection Sequence, CardCollection Deck, CardCollection Discard)
         {
             string[] saveFile = { "", "", "", "", "", "", "" };
             saveFile[0] = Convert.ToString(Score);
@@ -528,6 +529,16 @@ namespace Breakthrough
             try
             {
                 saveFile[4] = saveFile[4].Remove(saveFile[4].Length - 1, 1);
+            }
+            catch { }
+            //discard
+            for (int i = 1; i <= Discard.GetNumberOfCards(); i++)
+            {
+                saveFile[5] += Discard.GetCardDescriptionAt(i - 1) + " " + Discard.GetCardNumberAt(i - 1) + ",";
+            }
+            try
+            {
+                saveFile[5] = saveFile[5].Remove(saveFile[5].Length - 1, 1);
             }
             catch { }
 
