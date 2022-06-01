@@ -215,6 +215,7 @@ namespace Breakthrough
                 for (int Count = 1; Count <= 5; Count++)
                 {
                     MoveCard(Deck, Hand, Deck.GetCardNumberAt(0));
+                    Deck.UpdateTypeNumber(Deck.GetCardDescriptionAt(0));
                 }
                 AddDifficultyCardsToDeck();
                 Deck.Shuffle();
@@ -398,6 +399,7 @@ namespace Breakthrough
                     Console.WriteLine("Difficulty encountered!");
                     Console.WriteLine(Hand.GetCardDisplay());
                     Console.Write("To deal with this you need to either lose a key ");
+                    Console.WriteLine(Deck.GetStats());
                     Console.Write("(enter 1-5 to specify position of key) or (D)iscard five cards from the deck:> ");
                     string Choice = Console.ReadLine();
                     Console.WriteLine();
@@ -505,6 +507,12 @@ namespace Breakthrough
                 NewCard = new ToolCard("K", "c");
                 Deck.AddCard(NewCard);
             }
+            NewCard = new ToolCard("P", "m");
+            Deck.AddCard(NewCard);
+            NewCard = new ToolCard("K", "m");
+            Deck.AddCard(NewCard);
+            NewCard = new ToolCard("F", "m");
+            Deck.AddCard(NewCard);
         }
 
         private void SaveGame(Lock CurrentLock, CardCollection Hand, CardCollection Sequence, CardCollection Deck, CardCollection Discard)
@@ -892,10 +900,46 @@ namespace Breakthrough
     {
         protected List<Card> Cards = new List<Card>();
         protected string Name;
+        protected int NumPicks { get; set; }
+        protected int NumFiles { get; set; }
+        protected int NumKeys { get; set; }
+
 
         public CardCollection(string n)
         {
+            NumPicks = 15;
+            NumFiles = 9;
+            NumKeys = 9;
             Name = n;
+        }
+
+        public void UpdateTypeNumber(string card)
+        {
+            if (card == "F a" || card == "F b" || card == "F c")
+            {
+                NumFiles--;
+            }
+            else if (card == "P a" || card == "P b" || card == "P c")
+            {
+                NumPicks--;
+            }
+            else if (card == "K a" || card == "K b" || card == "K c")
+            {
+                NumKeys--;
+            }
+            else { }
+        }
+
+        public string GetStats()
+        {
+            decimal percentPicks = Convert.ToDecimal(NumPicks) / Convert.ToDecimal(Cards.Count) * 100;
+            percentPicks = Math.Round(percentPicks, 2);
+            decimal percentFiles = Convert.ToDecimal(NumFiles) / Convert.ToDecimal(Cards.Count) * 100;
+            percentFiles = Math.Round(percentFiles, 2);
+            decimal percentKeys = Convert.ToDecimal(NumKeys) / Convert.ToDecimal(Cards.Count) * 100;
+            percentKeys = Math.Round(percentKeys, 2);
+            string stats = "There is a:\n" + percentKeys + "% chance the next card will be a key\n" + percentFiles + "% chance it will be a file\n" + percentPicks + "% chance it will be a pick";
+            return stats;
         }
 
         public string GetName()
