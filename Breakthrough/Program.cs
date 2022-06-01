@@ -86,7 +86,14 @@ namespace Breakthrough
                                             GetCardFromDeck(CardChoice);
                                         }
                                         else if (DiscardOrPlay == "P")
+                                        {
+                                            if (Hand.GetCardDescriptionAt(CardChoice - 1) == "P m" || Hand.GetCardDescriptionAt(CardChoice - 1) == "F m" || Hand.GetCardDescriptionAt(CardChoice - 1) == "K m")
+                                            {
+                                                Hand.UpdateCard(CardChoice - 1);
+                                            }
                                             PlayCardToSequence(CardChoice);
+                                        }
+
                                         break;
                                     }
                                 case "P":
@@ -571,6 +578,12 @@ namespace Breakthrough
 
         private int MoveCard(CardCollection fromCollection, CardCollection toCollection, int cardNumber)
         {
+            /*
+            if (fromCollection.GetCardDescriptionAt(cardNumber) == "P m" || fromCollection.GetCardDescriptionAt(cardNumber) == "F m" || fromCollection.GetCardDescriptionAt(cardNumber) == "K m")
+            {
+                fromCollection.UpdateCard(cardNumber);
+            }
+            */
             int Score = 0;
             if (fromCollection.GetName() == "HAND" && toCollection.GetName() == "SEQUENCE")
             {
@@ -792,6 +805,9 @@ namespace Breakthrough
                 return CardNumber.ToString();
             }
         }
+        public virtual void SetCardToolKit()
+        {
+        }
     }
 
     class ToolCard : Card
@@ -812,6 +828,12 @@ namespace Breakthrough
             Kit = k;
             CardNumber = cardNo;
             SetScore();
+        }
+        public override void SetCardToolKit()
+        {
+            Console.WriteLine("Wich toolkit should this card be from?");
+            string toolKit = Console.ReadLine().ToLower();
+            Kit = toolKit;
         }
 
         private void SetScore()
@@ -1057,6 +1079,11 @@ namespace Breakthrough
                 CardDisplay += LineOfDashes + Environment.NewLine;
             }
             return CardDisplay;
+        }
+
+        public void UpdateCard(int x)
+        {
+            Cards[x].SetCardToolKit();
         }
     }
 }
